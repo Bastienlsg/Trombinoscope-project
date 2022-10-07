@@ -1,0 +1,55 @@
+body {
+  font-family: 'Ubuntu', sans-serif;
+}
+
+#erreur {
+  display: none;
+}
+
+.w-100pc {
+  width: 100%;
+}
+
+.disp-fl {
+  display: flex;
+}
+
+.j-c-c {
+  justify-content: center;
+}
+
+.fl-wrap {
+  flex-wrap: wrap;
+}
+
+.b-rad-100pc {
+  border-radius: 100%;
+}
+
+.img-s {
+  width: 250px;
+  height: auto;
+}
+
+.container {
+  width: 500px;
+  height: 390px;
+  margin: 20px;
+  padding: 20px;
+  background-color: #f7f7f7;
+  border: thin solid rgba(0, 0, 0, 0.25);
+  border-radius: 25px;
+  box-shadow: 10px 5px 20px rgb(225, 225, 225);
+}
+
+.txt-decoration {
+  text-decoration: none;
+  text-decoration: underline;
+  color: black;
+  font-weight: 600;
+  font-size: 2rem;
+}
+
+.txt-decoration:hover {
+  cursor: pointer;
+}

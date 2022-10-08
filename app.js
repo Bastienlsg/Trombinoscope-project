@@ -31,73 +31,121 @@ function fetchUrl(students) {
 }
 
 function generateHTML(data) {
+    
+    console.log(data)
 
-    let div = document.createElement("div");
-    div.id = data.id;
-    document.getElementById("pseudo").appendChild(div);
-    div.className = 'container';
+    let parentdiv = document.createElement("div");
+    parentdiv.className = 'container';
+    parentdiv.id = data.id;
+    document.getElementById("data-box").appendChild(parentdiv);
+
+    let divcontainer = document.createElement("div");
+    divcontainer.className = 'disp-fl fl-d-c al-c';
+    
+    let divspan = document.createElement("div");
+    divspan.className = 'disp-fl j-c-sp-ard mg-15px';
+    
+    let divbio = document.createElement("div");
+    divbio.className = 'disp-fl j-c-c mg-15px';
     
     let img = document.createElement("img");
-    div.appendChild(img);
     img.src = data.avatar_url;
-    img.className = 'b-rad-100pc img-s';
+    img.className = 'b-rad-100pc img-s mg-15px';
     
     let a = document.createElement("a");
-    div.appendChild(a);
     a.innerHTML = data.login;
     a.href = data.html_url;
-    a.className = 'txt-decoration';
+    a.className = 'txt-decoration mg-15px';
+
+    let spandepots = document.createElement("span");
+    spandepots.innerHTML = "Dépôts: " + data.public_repos;
     
-    let p = document.createElement("p");
-    div.appendChild(p);
-    p.innerHTML = "Dépôts: " + data.public_repos;
+    let spanfollowers = document.createElement("span");
+    spanfollowers.innerHTML = "Followers: " + data.followers;
     
-    let p1 = document.createElement("p");
-    div.appendChild(p1);
-    p1.innerHTML = "Followers: " + data.followers;
-    
-    let p3 = document.createElement("p");
-    div.appendChild(p3);
+    let spanbio = document.createElement("span");
     if (data.bio == null) {
-        p3.innerHTML = "Biographie: Cet utilisateur n'a pas de biographie";
+        spanbio.innerHTML = "Biographie: Cet utilisateur n'a pas de biographie";
     } else {
-        p3.innerHTML = "Biographie: " + data.bio;
+        spanbio.innerHTML = "Biographie: " + data.bio;
     }    
+
+    parentdiv.appendChild(divcontainer);
+    parentdiv.appendChild(divspan);
+    parentdiv.appendChild(divbio);
+    divcontainer.appendChild(img);
+    divcontainer.appendChild(a);
+    divspan.appendChild(spandepots);
+    divspan.appendChild(spanfollowers);
+    divbio.appendChild(spanbio);
+       
 }
 
 function generateHTMLFollowers(data, id) {
+    
+    console.log(data)
     console.log(id)
-    let div = document.createElement("div");
-    document.getElementById(id).appendChild(div);
+
     if (data.length > 0) {
-      let span = document.createElement("span");
-      div.appendChild(span);
-      span.innerHTML = "Followers: ";
-      
-      for (let i = 0; i < data.length; i++) {
-        let a1 = document.createElement("a");
-        div.appendChild(a1);
-        a1.innerHTML = data[i].login;
-        a1.href = data[i].html_url;
-      }
+
+        let parentdiv = document.createElement("div");
+        document.getElementById(id).appendChild(parentdiv);
+        parentdiv.className = 'disp-i-blck mg-l-170px pad-10px-0';
+        
+        let divdropdown = document.createElement("div");
+        divdropdown.className = 'dropdown';
+        
+        let divdropdowncontent = document.createElement("div");
+        divdropdowncontent.className = 'dropdown-content';
+
+        let button = document.createElement("button");
+        button.className = 'dropbtn';
+        button.innerHTML = "Voir les followers";
+        
+        parentdiv.appendChild(divdropdown)
+        divdropdown.appendChild(divdropdowncontent);
+        divdropdown.appendChild(button);
+        
+        for (let i = 0; i < data.length; i++) {
+            let a = document.createElement("a");
+            divdropdowncontent.appendChild(a);
+            a.innerHTML = data[i].login;
+            a.href = data[i].html_url;
+        }
     }
 }
 
 function generateHTMLRepos(data, id) {
+
+    console.log(data)
     console.log(id)
-    let div = document.createElement("div");
-    document.getElementById(id).appendChild(div);
+    
     if (data.length > 0) {
-      let span = document.createElement("span");
-      div.appendChild(span);
-      span.innerHTML = "Dépôts: ";
-      
-      for (let i = 0; i < data.length; i++) {
-        let a1 = document.createElement("a");
-        div.appendChild(a1);
-        a1.innerHTML = data[i].name;
-        a1.href = data[i].html_url;
-      }
+
+        let parentdiv = document.createElement("div");
+        document.getElementById(id).appendChild(parentdiv);
+        parentdiv.className = 'disp-i-blck mg-l-178px';
+
+        let divdropdown = document.createElement("div");
+        divdropdown.className = 'dropdown';
+        
+        let divdropdowncontent = document.createElement("div");
+        divdropdowncontent.className = 'dropdown-content';
+
+        let button = document.createElement("button");
+        button.className = 'dropbtn';
+        button.innerHTML = "Voir les dépôts";
+        
+        parentdiv.appendChild(divdropdown)
+        divdropdown.appendChild(divdropdowncontent);
+        divdropdown.appendChild(button);
+        
+        for (let i = 0; i < data.length && i < 3; i++) {
+            let a = document.createElement("a");
+            divdropdowncontent.appendChild(a);
+            a.innerHTML = data[i].name;
+            a.href = data[i].html_url;
+        }
     }
 }
 

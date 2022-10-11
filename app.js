@@ -83,29 +83,29 @@ function generateHTMLFollowers(data, id) {
 
     if (data.length > 0) {
 
-        jQuery('<div>', {
-            id: data.id,
-            class: 'disp-i-blck mg-l-170px pad-10px-0'
-        }).appendTo(`#${id}`);
+        let parentdiv = document.createElement("div");
+        document.getElementById(id).appendChild(parentdiv);
+        parentdiv.className = 'disp-i-blck mg-l-170px pad-10px-0';
+        
+        let divdropdown = document.createElement("div");
+        divdropdown.className = 'dropdown';
+        
+        let divdropdowncontent = document.createElement("div");
+        divdropdowncontent.className = 'dropdown-content';
 
-        jQuery('<div>', {
-            class: 'dropdown'
-        }).appendTo(`#${data.id}`);
-
-        jQuery('<div>', {
-            class: 'dropdown-content'
-        }).appendTo('dropdown');
-
-        jQuery('<button>', {
-            id: `button-${data.id}`,
-            class: 'dropbtn'
-        }).html("Voir les followers").appendTo('dropdown');
-
+        let button = document.createElement("button");
+        button.className = 'dropbtn';
+        button.innerHTML = "Voir les followers";
+        
+        parentdiv.appendChild(divdropdown)
+        divdropdown.appendChild(divdropdowncontent);
+        divdropdown.appendChild(button);
+        
         for (let i = 0; i < data.length; i++) {
-            jQuery('<a>', {
-                href: data[i].html_url,
-                class: 'txt-decoration mg-15px'
-            }).html(data[i].login).appendTo('dropdown-content');
+            let a = document.createElement("a");
+            divdropdowncontent.appendChild(a);
+            a.innerHTML = data[i].login;
+            a.href = data[i].html_url;
         }
     }
 }

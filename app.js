@@ -6,79 +6,77 @@ function getFile() {
         if (res.ok) {
             res.json().then(data => {fetchUrl(data.students)});
         } else {
-            document.getElementById("erreur").innerHTML = "Votre fichier n'existe pas";
-            document.getElementById("erreur").style.display = "block";
+            $("#erreur").text("Votre fichier n'existe pas");
+            $("#erreur").show();
         }
     })
 }
 
-function fetchUrl(students) {
-    for(let i = 0; i < students.length; i++) {
-        let id='';
-        let url = [`https://api.github.com/users/${students[i]}`, `https://api.github.com/users/${students[i]}/followers`, `https://api.github.com/users/${students[i]}/repos`];
-        for(let j = 0; j < url.length; j++) {
-            fetch(url[j], {headers: new Headers({ "Authorization": ressource.token })})
-                .then((res) => res.json()).then(data => {if (j == 0) {
-                                                            generateHTML(data);
-                                                            id = data.id;
-                                                        } else if (j == 1) {
-                                                            generateHTMLFollowers(data, id);
-                                                        } else {
-                                                            generateHTMLRepos(data, id);
-                                                        }});
-        }
+async function fetchUrl(students) {
+    for(let student of students) {
+        let options = {headers: new Headers({ "Authorization": ressource.token })};
+        let id = await fetch(`https://api.github.com/users/${student}`, options)
+            .then((res) => res.json())
+            .then(generateHTML)
+            
+        await fetch(`https://api.github.com/users/${student}/followers`, options)
+            .then((res) => res.json())
+            .then(data => generateHTMLFollowers(data, id))
+
+        await fetch(`https://api.github.com/users/${student}/repos`, options)
+            .then((res) => res.json())
+            .then(data => generateHTMLRepos(data, id))
+                                                        
     }
 }
 
 function generateHTML(data) {
-    
-    console.log(data)
 
-    let parentdiv = document.createElement("div");
-    parentdiv.className = 'container';
-    parentdiv.id = data.id;
-    document.getElementById("data-box").appendChild(parentdiv);
+    jQuery('<div>', {
+        id: data.id,
+        class: 'container'
+    }).appendTo("#data-box");
 
-    let divcontainer = document.createElement("div");
-    divcontainer.className = 'disp-fl fl-d-c al-c';
-    
-    let divspan = document.createElement("div");
-    divspan.className = 'disp-fl j-c-sp-ard mg-15px';
-    
-    let divbio = document.createElement("div");
-    divbio.className = 'disp-fl j-c-c mg-15px';
-    
-    let img = document.createElement("img");
-    img.src = data.avatar_url;
-    img.className = 'b-rad-100pc img-s mg-15px';
-    
-    let a = document.createElement("a");
-    a.innerHTML = data.login;
-    a.href = data.html_url;
-    a.className = 'txt-decoration mg-15px';
+    jQuery('<div>', {
+        id: `img-a-${data.id}`,
+        class: 'disp-fl fl-d-c al-c'
+    }).appendTo(`#${data.id}`);
 
-    let spandepots = document.createElement("span");
-    spandepots.innerHTML = "Dépôts: " + data.public_repos;
-    
-    let spanfollowers = document.createElement("span");
-    spanfollowers.innerHTML = "Followers: " + data.followers;
-    
-    let spanbio = document.createElement("span");
+    jQuery('<div>', {
+        id: `span-${data.id}`,
+        class: 'disp-fl j-c-sp-ard mg-15px'
+    }).appendTo(`#${data.id}`);
+
+    jQuery('<div>', {
+        id: `bio-${data.id}`,
+        class: 'disp-fl j-c-c mg-15px'
+    }).appendTo(`#${data.id}`);
+
+    jQuery('<img>', {
+        src: data.avatar_url,
+        class: 'b-rad-100pc img-s mg-15px'
+    }).appendTo(`#img-a-${data.id}`);
+
+    jQuery('<a>', {
+        href: data.html_url,
+        class: 'txt-decoration mg-15px'
+    }).html(data.login).appendTo(`#img-a-${data.id}`);
+
+    jQuery('<span>', {
+    }).html(`Dépôts: ${data.public_repos}`).appendTo(`#span-${data.id}`);
+
+    jQuery('<span>', {
+    }).html(`Followers: ${data.followers}`).appendTo(`#span-${data.id}`);
+
     if (data.bio == null) {
-        spanbio.innerHTML = "Biographie: Cet utilisateur n'a pas de biographie";
+        jQuery('<span>', {
+        }).html("Biographie: Cet utilisateur n'a pas de biographie").appendTo(`#bio-${data.id}`);
     } else {
-        spanbio.innerHTML = "Biographie: " + data.bio;
-    }    
+        jQuery('<span>', {
+        }).html(`Biographie: ${data.bio}`).appendTo(`#bio-${data.id}`);
+    };
 
-    parentdiv.appendChild(divcontainer);
-    parentdiv.appendChild(divspan);
-    parentdiv.appendChild(divbio);
-    divcontainer.appendChild(img);
-    divcontainer.appendChild(a);
-    divspan.appendChild(spandepots);
-    divspan.appendChild(spanfollowers);
-    divbio.appendChild(spanbio);
-       
+    return data.id;
 }
 
 function generateHTMLFollowers(data, id) {
@@ -146,7 +144,11 @@ function generateHTMLRepos(data, id) {
             a.innerHTML = data[i].name;
             a.href = data[i].html_url;
         }
+        $(".loader, lds-facebook").fadeOut( "slow");
+    
     }
 }
 
-getFile()
+$(document).ready(function() {
+    getFile()
+});
